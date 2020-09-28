@@ -1,3 +1,5 @@
+import uuid
+
 dice = [0, 4, 6, 8, 10, 12]
 attributes = {
     'Agility' : 4,
@@ -281,15 +283,20 @@ edges = {
 }
 
 class Character:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
+        self.uid = uuid.uuid4()
         self.attributes = attributes
         self.attribute_incs = 0
         self.skills = skills
         self.skill_incs = 0
-        self.hindrances = []
+        self.hindrances = {}
+        self.hind_pts = 0
         self.edges = []
         self.advancement = 0
         self.derived = self.get_derived()
+        self.money = 20000
+        self.inventory = {}
     
     def get_derived(self):
         return {
@@ -297,6 +304,13 @@ class Character:
             'parry' :  2 + self.skills['Fighting']/2,
             'toughness' : 2 + self.attributes['Vigor']/2
         }
+
+    def get_rank(self):
+        ranks = ['Novice', 'Seasoned', 'Veteran', 'Heroic', 'Legendary']
+        return ranks[min(self.advancement//4, len(ranks) - 1)]
+
+    def add_advancement(self, lvls=1):
+        self.advancement += lvls
 
     def add_attribute(self, attr):
         self.attribute_incs += 1
@@ -308,22 +322,47 @@ class Character:
             self.attributes[attr] = dice[lvl + 1]
     
     def add_skill(self, sk):
-        lvl = dice.index(self.skills[sk])
-        attr = skill_attr[sk]
-        attr_lvl = dice.index(self.attributes[attr])
-        if lvl >= len(dice) - 1:
-            print("at max")
-            raise
-        elif lvl <= attr_lvl:
-            self.skill_incs += 1
-        else:
-            self.skill_incs += 2
-        self.skills[sk] = dice[lvl + 1]
+        try:
+            lvl = dice.index(self.skills[sk])
+            attr = skill_attr[sk]
+            attr_lvl = dice.index(self.attributes[attr])
+            if lvl >= len(dice) - 1:
+                raise ValueError('Exceeded max value for skill')
+            elif lvl <= attr_lvl:
+                self.skill_incs += 1
+            else:
+                self.skill_incs += 2
+            self.skills[sk] = dice[lvl + 1]
+        except Exception as e:
+            return e
 
-    def add_hindrance(self):
-        return 0
+
+    def add_hindrance(self, hindrance, lvl='m'):
+        try:
+            if lvl not in ['M','m']:
+                raise ValueError('Only M or m allowed for hindrance level')
+            val = hindrances[hindrance]
+            if val == 'M':
+                self.hind_pts += 2
+            elif val == 'm':
+                self.hind_pts += 1
+            else:
+                if lvl == 'M':
+                    self.hind_pts += 2
+                elif lvl == 'm':
+                    self.hind_pts += 1
+        except KeyError as e:
+            return "Hindrance not found"
+        except Exception as e:
+            return e
 
     def add_edge(self):
+        return 0
+
+    def add_item(self, item, cost, *args):
+        val = [cost] + list(args)
+        print(val)
+        self.inventory.update({item: cost})
         return 0
 
     def print_attributes(self):

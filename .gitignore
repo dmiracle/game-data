@@ -334,3 +334,4 @@ ASALocalRun/
 # User
 
 .vscode
+.ipynb_checkpoints
