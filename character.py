@@ -436,4 +436,4 @@ class Character:
 
     def generate_random_character(self):
         self.hindrances, self.hind_pts = self.get_random_hindrances()
-        self.edges = self.get_random_edges()
+        
