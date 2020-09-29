@@ -395,18 +395,6 @@ class Character:
         self.inventory.update({item: cost})
         return 0
 
-    def print_attributes(self):
-        print(self.attributes)
-
-    def print_skills(self):
-        print(self.skills)
-
-    def print_hindrances(self):
-        print(self.hindrances)
-
-    def print_edges(self):
-        print(self.edges)
-
     def get_all_hindrances(self):
         return hindrances
 
@@ -433,4 +421,11 @@ class Character:
         return my_hindrances, hpts
 
     def get_random_edges(self):
-        return 0
+        if self.hind_pts//2 >= 2:
+            # rans one or 2 edges
+        elif self.hind_pts//2 >=1:
+            return 0
+
+    def generate_random_character(self):
+        self.hindrances = self.get_random_hindrances()
+        self.edges = self.get_random_edges()
