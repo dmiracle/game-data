@@ -1,4 +1,5 @@
 import uuid
+import random
 
 dice = [0, 4, 6, 8, 10, 12]
 attributes = {
@@ -146,7 +147,14 @@ hindrances = {
     'Power Negation': 'M',
     'Ruthless': 'M/m',
     'Terminally Ill': 'M',
-    'Weakness': 'M/m'
+    'Weakness': 'M/m',
+    'Bad Filters': 'M',
+    'Bad Rep': 'm',
+    'Giri': 'M/m',
+    'Magnet': 'M/m',
+    'Nano-Infection': 'M/m',
+    'Unplugged': 'M',
+    'Watched': 'm'
 }
 edges = {
     'Alertness': 'Novice',
@@ -279,7 +287,27 @@ edges = {
     'Sidekick': 'Legendary',
     'Tough As Nails': 'Legendary',
     'Weapon Master': 'Legendary',
-    'Master of Arms': 'Legendary'
+    'Master of Arms': 'Legendary',
+    'Back from the Dead': 'Novice',
+    'Augmented Warrior': 'Novice',
+    'Gun Fu': 'Novice',
+    'Enlightened Gun Fu': 'Seasoned',
+    'Master Gun Fu': 'Veteran',
+    'Pack Fighting': 'Novice',
+    'Batch Edit': 'Novice',
+    'Cage Breaker': 'Heroic',
+    'Cutter': 'Seasoned',
+    'Cleaner': 'Novice',
+    'Cybermonk': 'Novice',
+    'Hacker': 'Novice',
+    'Survivalist': 'Novice',
+    'Alternate Identity': 'Novice',
+    'Reputation': 'Novice',
+    'Street Samurai': 'Novice',
+    'Augmented Master': 'Veteran',
+    'Cyber Tolerance': 'Novice',
+    'Improved Cyber Tolerance': 'Veteran',
+    'Miracle Worker': 'Seasoned'
 }
 
 class Character:
@@ -351,6 +379,8 @@ class Character:
                     self.hind_pts += 2
                 elif lvl == 'm':
                     self.hind_pts += 1
+                else:
+                    raise ValueError('You should not have come here')
         except KeyError as e:
             return "Hindrance not found"
         except Exception as e:
@@ -382,3 +412,31 @@ class Character:
 
     def print_edges(self):
         print(self.edges)
+
+    def get_all_hindrances(self):
+        return hindrances
+
+    def get_random_hindrances(self):
+        my_hindrances = {}
+        hpts = 0
+        hind_starter_combos = [
+            [],
+            ['m'],
+            ['m', 'm'],
+            ['m', 'm', 'm'],
+            ['m', 'm', 'm', 'm'],
+            ['M'],
+            ['M', 'm'],     
+            ['M', 'm', 'm'],
+            ['M', 'M']       
+        ]
+        h_choice = random.choice(hind_starter_combos)
+        for rank in h_choice:
+            hind_list_tmp = [k for k,v in hindrances.items() if v.find(rank) != -1]
+            hindrance = random.choice(hind_list_tmp)
+            my_hindrances.update({ hindrance: rank })
+            hpts += (1 if rank == 'm' else 2)
+        return my_hindrances, hpts
+
+    def get_random_edges(self):
+        return 0
