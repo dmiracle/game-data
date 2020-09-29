@@ -422,10 +422,12 @@ class Character:
 
     def get_random_edges(self):
         if self.hind_pts//2 >= 2:
+            print('Herp')
             # rans one or 2 edges
-        elif self.hind_pts//2 >=1:
-            return 0
+        elif self.hind_pts//2 >= 1:
+            print('Derp')
+        return 0
 
     def generate_random_character(self):
-        self.hindrances = self.get_random_hindrances()
+        self.hindrances, self.hind_pts = self.get_random_hindrances()
         self.edges = self.get_random_edges()
