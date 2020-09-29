@@ -4,4 +4,3 @@ pandas
 matplotlib
 jupyter
 sklearn
-tensorflow

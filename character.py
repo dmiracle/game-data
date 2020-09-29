@@ -145,7 +145,6 @@ hindrances = {
     'Mania': 'M/m',
     'Out Of My League': 'm',
     'Power Negation': 'M',
-    'Ruthless': 'M/m',
     'Terminally Ill': 'M',
     'Weakness': 'M/m',
     'Bad Filters': 'M',
