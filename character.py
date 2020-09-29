@@ -4,7 +4,7 @@ import random
 dice = [0, 4, 6, 8, 10, 12]
 attributes = {
     'Agility' : 4,
-    'Smart' : 4,
+    'Smarts' : 4,
     'Spirit': 4,
     'Strength': 4,
     'Vigor': 4
@@ -324,6 +324,7 @@ class Character:
         self.derived = self.get_derived()
         self.money = 20000
         self.inventory = {}
+        self.armor = 0
     
     def get_derived(self):
         return {
@@ -374,12 +375,14 @@ class Character:
             elif val == 'm':
                 self.hind_pts += 1
             else:
-                if lvl == 'M':
+                val = lvl
+                if val == 'M':
                     self.hind_pts += 2
-                elif lvl == 'm':
+                elif val == 'm':
                     self.hind_pts += 1
                 else:
                     raise ValueError('You should not have come here')
+            self.hindrances.update({hindrance: val})
         except KeyError as e:
             return "Hindrance not found"
         except Exception as e:
