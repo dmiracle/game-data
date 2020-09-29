@@ -360,10 +360,16 @@ class Character:
         return 0
 
     def add_item(self, item, cost, *args):
-        val = [cost] + list(args)
-        print(val)
-        self.inventory.update({item: cost})
-        return 0
+        try:
+            if cost > self.money:
+                raise ValueError('Not enough money')
+            else:
+                self.money -= cost
+            val = [cost] + list(args)
+            print(val)
+            self.inventory.update({item: val})
+        except Exception as e:
+            return e
 
     def print_attributes(self):
         print(self.attributes)
