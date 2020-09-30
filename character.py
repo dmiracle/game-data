@@ -319,7 +319,7 @@ class Character:
         self.skill_incs = 0
         self.hindrances = {}
         self.hind_pts = 0
-        self.edges = []
+        self.edges = {}
         self.advancement = 0
         self.derived = self.get_derived()
         self.money = 20000
@@ -388,8 +388,13 @@ class Character:
         except Exception as e:
             return e
 
-    def add_edge(self):
-        return 0
+    def add_edge(self, edge):
+        try:
+            self.edges.update({edge:edges[edge]})
+        except KeyError as e:
+            return "Edge not found"
+        except Exception as e:
+            return e    
 
     def add_item(self, item, cost, *args):
         try:
