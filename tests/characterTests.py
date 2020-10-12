@@ -25,7 +25,6 @@ class TestCharacter(unittest.TestCase):
             self.assertTrue(n == ms + 2 * Ms)
 
     def test_add_edge(self):
-        self.test_char.add_edge("Fervor")
         print(self.test_char.edges)
         print(self.test_char.get_random_edge())
         print(self.test_char.get_random_edges(4))

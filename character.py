@@ -329,12 +329,13 @@ class Character:
         self.armor = 0
     
     def __repr__(self):
+        skills = {k:v for k, v in self.skills.items() if v != 0}
         return f"""
             name: {self.name},
             uid: {self.uid},
             attributes: {self.attributes},
             attribute_incriments: {self.attribute_incs},
-            skills: {self.skills},
+            skills: {skills},
             skill_incriments: {self.skill_incs},
             hindrances: {self.hindrances},
             hindrance_points: {self.hind_pts},
