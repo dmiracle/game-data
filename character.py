@@ -1,7 +1,9 @@
 import uuid
 import random
+import pickle 
 
 dice = [0, 4, 6, 8, 10, 12]
+ranks = ['Novice', 'Seasoned', 'Veteran', 'Heroic', 'Legendary']
 attributes = {
     'Agility' : 4,
     'Smarts' : 4,
@@ -319,13 +321,31 @@ class Character:
         self.skill_incs = 0
         self.hindrances = {}
         self.hind_pts = 0
-        self.edges = []
+        self.edges = {}
         self.advancement = 0
         self.derived = self.get_derived()
         self.money = 20000
         self.inventory = {}
         self.armor = 0
     
+    def __repr__(self):
+        skills = {k:v for k, v in self.skills.items() if v != 0}
+        return f"""
+            name: {self.name},
+            uid: {self.uid},
+            attributes: {self.attributes},
+            attribute_incriments: {self.attribute_incs},
+            skills: {skills},
+            skill_incriments: {self.skill_incs},
+            hindrances: {self.hindrances},
+            hindrance_points: {self.hind_pts},
+            edges: {self.edges},
+            advancements: {self.advancement},
+            derived: {self.derived},
+            money: {self.money},
+            inventory: {self.inventory},
+            armor: {self.armor},
+        """
     def get_derived(self):
         return {
             'pace' : 6,
@@ -334,7 +354,6 @@ class Character:
         }
 
     def get_rank(self):
-        ranks = ['Novice', 'Seasoned', 'Veteran', 'Heroic', 'Legendary']
         return ranks[min(self.advancement//4, len(ranks) - 1)]
 
     def add_advancement(self, lvls=1):
@@ -344,8 +363,7 @@ class Character:
         self.attribute_incs += 1
         lvl = dice.index(self.attributes[attr])
         if lvl >= len(dice) - 1:
-            print("at max")
-            # throw exception
+            raise ValueError('Attribute at max value')
         else:
             self.attributes[attr] = dice[lvl + 1]
     
@@ -362,7 +380,7 @@ class Character:
                 self.skill_incs += 2
             self.skills[sk] = dice[lvl + 1]
         except Exception as e:
-            return e
+            print(e)
 
 
     def add_hindrance(self, hindrance, lvl='m'):
@@ -384,12 +402,20 @@ class Character:
                     raise ValueError('You should not have come here')
             self.hindrances.update({hindrance: val})
         except KeyError as e:
-            return "Hindrance not found"
+            print("Hindrance not found")
         except Exception as e:
-            return e
+            print(e)
 
-    def add_edge(self):
-        return 0
+    def add_edge(self, edge):
+        try:
+            print(edges[edge])
+            if ranks.index(edges[edge]) > ranks.index(self.get_rank()):
+                raise ValueError('You are too green for this edge')
+            self.edges.update({edge:edges[edge]})
+        except KeyError as e:
+            print("Edge not found")
+        except Exception as e:
+            print(e)    
 
     def add_item(self, item, cost, *args):
         try:
@@ -422,20 +448,39 @@ class Character:
         ]
         h_choice = random.choice(hind_starter_combos)
         for rank in h_choice:
-            hind_list_tmp = [k for k,v in hindrances.items() if v.find(rank) != -1]
+            hind_list_tmp = [k for k,v in hindrances.items() if v.find(rank) != -1 and k not in my_hindrances]
             hindrance = random.choice(hind_list_tmp)
             my_hindrances.update({ hindrance: rank })
             hpts += (1 if rank == 'm' else 2)
         return my_hindrances, hpts
 
-    def get_random_edges(self):
-        if self.hind_pts//2 >= 2:
-            print('Herp')
-            # rans one or 2 edges
-        elif self.hind_pts//2 >= 1:
-            print('Derp')
-        return 0
+    def get_random_edge(self):
+        rand_edge = random.choice(list(edges.keys()))
+        return {rand_edge: edges[rand_edge]}
+
+    def get_random_edges(self, num):
+        rand_edge = random.sample(list(edges.keys()),num)
+        return {k: edges[k] for k in rand_edge}
+        
+
+    def generate_random_attributes(self, pts):
+        while pts > 0: 
+            self.add_attribute(random.choice(list(attributes.keys())))
+            pts = pts - 1
+
+    def generate_random_skills(self, pts):
+        while self.skill_incs < pts: 
+            self.add_skill(random.choice(list(skills.keys())))      
 
     def generate_random_character(self):
+        start_attr_pts = 5
+        start_skill_pts = 12
+        self.generate_random_attributes(start_attr_pts)
+        self.generate_random_skills(start_skill_pts)
         self.hindrances, self.hind_pts = self.get_random_hindrances()
-        
+        self.edges = self.get_random_edges(4) # this should use add edge method to protect
+
+    def save(self):
+        fname = "saves/" + self.name
+        with open(fname, 'wb') as f:
+            pickle.dump(self, f)
