@@ -3,5 +3,5 @@ adjectives = [
 ]
 
 nouns = [
-    'dog', 'horse', 'whale', 'houseboat', '
+    'dog', 'horse', 'whale', 'houseboat'
 ]
